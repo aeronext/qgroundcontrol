@@ -1,0 +1,29 @@
+<RCC>
+    <qresource prefix="/Custom">
+        <!-- カスタムウィジェット -->
+        <file alias="qml/Custom/Widgets/JapaneseInstrumentPanel.qml">res/Custom/Widgets/JapaneseInstrumentPanel.qml</file>
+        <file alias="qml/Custom/Widgets/CustomFlightStatus.qml">res/Custom/Widgets/CustomFlightStatus.qml</file>
+        <file alias="qml/Custom/Widgets/JapaneseNavigationBar.qml">res/Custom/Widgets/JapaneseNavigationBar.qml</file>
+        
+        <!-- フライビューカスタムレイヤー -->
+        <file alias="qml/FlyViewCustomLayer.qml">src/FlyViewCustomLayer.qml</file>
+        
+        <!-- カスタムイメージ -->
+        <file alias="img/japanese_logo.svg">res/Images/japanese_logo.svg</file>
+        <file alias="img/custom_background.png">res/Images/custom_background.png</file>
+        
+        <!-- カスタムアイコン -->
+        <file alias="icons/custom_qgroundcontrol.png">res/icons/custom_qgroundcontrol.png</file>
+        <file alias="icons/custom_qgroundcontrol.ico">res/icons/custom_qgroundcontrol.ico</file>
+        <file alias="icons/custom_qgroundcontrol.svg">res/icons/custom_qgroundcontrol.svg</file>
+    </qresource>
+    
+    <!-- 標準QGCリソースのオーバーライド -->
+    <qresource prefix="/qgc">
+        <!-- メインウィンドウのカスタマイズ -->
+        <file alias="qml/MainWindowInner.qml">src/CustomMainWindow.qml</file>
+        
+        <!-- 設定画面のカスタマイズ -->
+        <file alias="qml/AppSettings.qml">src/CustomAppSettings.qml</file>
+    </qresource>
+</RCC>
