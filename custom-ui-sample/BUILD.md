@@ -40,9 +40,32 @@ brew link qt@5 --force
 
 ## ビルド手順
 
-### 1. プロジェクトの準備
+### 方法1: Dockerを使用したビルド（推奨）
 
-QGroundControlのメインプロジェクトから、このカスタムUIサンプルを使用してビルドします。
+#### 1. Dockerビルドの実行
+
+```bash
+# custom-ui-sampleディレクトリに移動
+cd custom-ui-sample
+
+# カスタムビルドを実行
+bash deploy/docker/run-docker-ubuntu-custom.sh
+
+# 特定のビルドタイプを指定する場合
+bash deploy/docker/run-docker-ubuntu-custom.sh Debug      # デバッグビルド
+bash deploy/docker/run-docker-ubuntu-custom.sh Release    # リリースビルド（デフォルト）
+```
+
+#### 2. Dockerビルドの利点
+
+- **環境の一貫性**: 開発者間で同じビルド環境を保証
+- **依存関係の自動解決**: 必要なQt、依存ライブラリが自動でインストール
+- **クリーンビルド**: 毎回クリーンな環境でビルド
+- **カスタムディレクトリの自動処理**: `custom-ui-sample` → `custom` の自動リネーム
+
+### 方法2: ローカル環境でのビルド
+
+#### 1. プロジェクトの準備
 
 ```bash
 # QGroundControlのメインプロジェクトディレクトリに移動
@@ -55,7 +78,7 @@ mv custom-ui-sample custom
 cd custom
 ```
 
-### 2. ビルド設定
+#### 2. ビルド設定
 
 ```bash
 # ビルドディレクトリを作成
@@ -70,7 +93,7 @@ cmake .. \
     -DQGC_STABLE_BUILD=ON
 ```
 
-### 3. ビルド実行
+#### 3. ビルド実行
 
 ```bash
 # メイクファイルを使用してビルド
@@ -223,26 +246,26 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    
+
     steps:
     - uses: actions/checkout@v2
-    
+
     - name: Install dependencies
       run: |
         sudo apt-get update
         sudo apt-get install -y qt5-default qtdeclarative5-dev
-    
+
     - name: Configure CMake
       run: |
         mkdir build
         cd build
         cmake .. -DCMAKE_BUILD_TYPE=Release -DCUSTOM_BUILD=ON
-    
+
     - name: Build
       run: |
         cd build
         make -j$(nproc)
-    
+
     - name: Test
       run: |
         cd build

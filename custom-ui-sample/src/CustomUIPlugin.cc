@@ -6,7 +6,7 @@
  * COPYING.md in the root of the source code directory.
  *
  * カスタムUIプラグイン - 日本語対応版 実装
- * 
+ *
  * @file
  *   @author Custom UI Team
  */
@@ -16,6 +16,7 @@
 #include "QGCPalette.h"
 #include "AppSettings.h"
 #include "BrandImageSettings.h"
+#include "QGCMAVLink.h"
 
 #include <QtCore/QApplicationStatic>
 #include <QtQml/QQmlApplicationEngine>
@@ -54,7 +55,7 @@ QUrl CustomUIInterceptor::intercept(const QUrl &url, DataType type)
         if (url.scheme() == QStringLiteral("qrc")) {
             const QString origPath = url.path();
             const QString overridePath = QStringLiteral(":/Custom%1").arg(origPath);
-            
+
             if (QFile::exists(overridePath)) {
                 QUrl result;
                 result.setScheme(QStringLiteral("qrc"));
@@ -73,13 +74,13 @@ CustomUIPlugin::CustomUIPlugin(QObject* parent)
     , _options(new JapaneseCustomOptions(this))
 {
     qCDebug(CustomUILog) << "カスタムUIプラグイン初期化開始";
-    
+
     _showAdvancedUI = false;
     connect(this, &QGCCorePlugin::showAdvancedUIChanged, this, &CustomUIPlugin::_advancedModeChanged);
-    
+
     _setupJapaneseColors();
     _addJapaneseSettings();
-    
+
     qCDebug(CustomUILog) << "カスタムUIプラグイン初期化完了";
 }
 
@@ -93,24 +94,24 @@ void CustomUIPlugin::cleanup()
     if (_qmlEngine) {
         _qmlEngine->removeUrlInterceptor(_interceptor);
     }
-    
+
     delete _interceptor;
     _interceptor = nullptr;
-    
+
     qCDebug(CustomUILog) << "カスタムUIプラグインクリーンアップ完了";
 }
 
 QQmlApplicationEngine* CustomUIPlugin::createQmlApplicationEngine(QObject* parent)
 {
     _qmlEngine = QGCCorePlugin::createQmlApplicationEngine(parent);
-    
+
     // カスタムウィジェットパスを追加
     _qmlEngine->addImportPath("qrc:/qml/Custom/Widgets");
-    
+
     // URLインターセプターを設定
     _interceptor = new CustomUIInterceptor();
     _qmlEngine->addUrlInterceptor(_interceptor);
-    
+
     qCDebug(CustomUILog) << "QMLエンジン初期化完了";
     return _qmlEngine;
 }
@@ -157,19 +158,19 @@ bool CustomUIPlugin::overrideSettingsGroupVisibility(const QString& name)
     if (name == BrandImageSettings::name) {
         return false;
     }
-    
+
     // 高度な設定は上級モードでのみ表示
     if (name == QStringLiteral("Advanced") && !_showAdvancedUI) {
         return false;
     }
-    
+
     return true;
 }
 
 void CustomUIPlugin::adjustSettingMetaData(const QString& settingsGroup, FactMetaData& metaData, bool& visible)
 {
     QGCCorePlugin::adjustSettingMetaData(settingsGroup, metaData, visible);
-    
+
     if (settingsGroup == AppSettings::settingsGroup) {
         // 日本向けデフォルト設定
         if (metaData.name() == AppSettings::offlineEditingFirmwareClassName) {
@@ -185,7 +186,7 @@ void CustomUIPlugin::adjustSettingMetaData(const QString& settingsGroup, FactMet
 void CustomUIPlugin::_advancedModeChanged(bool advanced)
 {
     qCDebug(CustomUILog) << "上級モード変更:" << advanced;
-    _options->_showAdvancedUI = advanced;
+    _options->setShowAdvancedUI(advanced);
 }
 
 void CustomUIPlugin::_setupJapaneseColors()
